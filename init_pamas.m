@@ -2,6 +2,7 @@
 
 % note: 隐藏层神经元数可自定义！
 % note: 训练次数很重要！！
+% note: 在所有神经元值计算完成后才能更新连接权与阈值！！
 
 % 在(0, 1)范围内随机初始化网络中的连接权和阈值
 d = size(X, 2); % 输入层神经元个数
@@ -31,15 +32,15 @@ for time = 1: 10000 %训练次数
         result(time, i) = y8;
         
         g = y8.*(1-y8).*(y-y8);
-        deta_w = eta*b'*g;
-        w = w + deta_w; % 更新w
+        deta_w = eta*b'*g; % 计算各个连接权和阈值的微分
         deta_cta = -eta*g;
-        cta = cta + deta_cta; % 更新cta
-        
-        e = b.*(1-b).*(g*w');
+         e = b.*(1-b).*(g*w');
         deta_yam = -eta*e;
+        deta_v = eta*x'*e;   
+        % 计算完成后同步更新。
+        w = w + deta_w; % 更新w
+        cta = cta + deta_cta; % 更新cta
         yam = yam + deta_yam; % 更新yam
-        deta_v = eta*x'*e;
         v = v + deta_v; % 更新v
     end
 end
